@@ -310,6 +310,22 @@ export function ProjectsSection() {
                     </span>
                   </div>
                 </div>
+
+                {/* Link Externo */}
+                {selectedProject.link && (
+                  <div className="pt-4">
+                    <a
+                      href={selectedProject.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-cyan-500 hover:from-primary/90 hover:to-cyan-500/90 text-white rounded-full font-medium transition-all duration-300 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:scale-105"
+                    >
+                      <Globe className="h-5 w-5" />
+                      Visitar Proyecto
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           )}
