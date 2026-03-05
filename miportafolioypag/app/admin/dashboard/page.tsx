@@ -54,11 +54,12 @@ export default function AdminDashboard() {
       const { authService } = await import("@/lib/supabase/auth")
       await authService.signOut()
       localStorage.removeItem("adminToken")
+      document.cookie = "adminToken=; path=/; max-age=0"
       router.push("/admin/login")
     } catch (error) {
       console.error("Error al cerrar sesión:", error)
-      // Limpiar localStorage de todas formas
       localStorage.removeItem("adminToken")
+      document.cookie = "adminToken=; path=/; max-age=0"
       router.push("/admin/login")
     }
   }

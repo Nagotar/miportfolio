@@ -30,8 +30,9 @@ export default function AdminLogin() {
       const { session } = await authService.signIn(email, password)
       
       if (session) {
-        // Guardar token en localStorage para persistencia
+        // Guardar token en localStorage y cookie para middleware
         localStorage.setItem("adminToken", session.access_token)
+        document.cookie = `adminToken=${session.access_token}; path=/; max-age=86400; SameSite=Strict`
         router.push("/admin/dashboard")
       } else {
         setError("Error al iniciar sesión")
