@@ -1,7 +1,7 @@
 import React from "react"
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
+// import { Analytics } from '@vercel/analytics/next'
 import { Chatbot } from '@/components/chatbot'
 import { Toaster } from 'react-hot-toast'
 import './globals.css'
@@ -41,7 +41,7 @@ export default function RootLayout({
       <body className={`font-sans antialiased`}>
         {children}
         <Chatbot />
-        <Analytics />
+        {/* <Analytics /> */}
         <Toaster 
           position="top-right"
           toastOptions={{

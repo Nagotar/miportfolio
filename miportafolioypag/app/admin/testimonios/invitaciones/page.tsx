@@ -46,6 +46,35 @@ export default function InvitacionesPage() {
     expires_in_days: 30
   })
 
+  // Función helper para copiar al portapapeles con fallback
+  const copyToClipboard = async (text: string): Promise<boolean> => {
+    try {
+      // Método moderno (requiere HTTPS)
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text)
+        return true
+      }
+      
+      // Fallback para navegadores antiguos o contextos no seguros
+      const textArea = document.createElement("textarea")
+      textArea.value = text
+      textArea.style.position = "fixed"
+      textArea.style.left = "-999999px"
+      textArea.style.top = "-999999px"
+      document.body.appendChild(textArea)
+      textArea.focus()
+      textArea.select()
+      
+      const successful = document.execCommand('copy')
+      document.body.removeChild(textArea)
+      
+      return successful
+    } catch (err) {
+      console.error('Error al copiar:', err)
+      return false
+    }
+  }
+
   useEffect(() => {
     loadInvitations()
   }, [])
@@ -84,14 +113,18 @@ export default function InvitacionesPage() {
         
         // Copiar link automáticamente
         if (data.link) {
-          await navigator.clipboard.writeText(data.link)
-          setCopiedId(data.data.id)
-          setTimeout(() => setCopiedId(null), 3000)
+          const copied = await copyToClipboard(data.link)
+          if (copied) {
+            setCopiedId(data.data.id)
+            setTimeout(() => setCopiedId(null), 3000)
+          } else {
+            alert(`Link creado (copia manualmente):\n${data.link}`)
+          }
         }
       }
     } catch (error) {
       console.error("Error creando invitación:", error)
-      alert("Error al crear invitación")
+      alert("Error al crear invitación. Verifica la consola para más detalles.")
     } finally {
       setCreating(false)
     }
@@ -99,12 +132,13 @@ export default function InvitacionesPage() {
 
   const handleCopyLink = async (token: string, id: string) => {
     const link = `${window.location.origin}/testimonios/nuevo?token=${token}`
-    try {
-      await navigator.clipboard.writeText(link)
+    const copied = await copyToClipboard(link)
+    
+    if (copied) {
       setCopiedId(id)
       setTimeout(() => setCopiedId(null), 3000)
-    } catch (error) {
-      alert("Error al copiar link")
+    } else {
+      alert(`No se pudo copiar automáticamente. Copia este link:\n${link}`)
     }
   }
 
