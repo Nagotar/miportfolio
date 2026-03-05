@@ -159,17 +159,25 @@ export function ClientsSection() {
 
                 <blockquote>
                   <p className="text-lg text-foreground leading-relaxed italic">
-                    &ldquo;{testimonial.quote}&rdquo;
+                    &ldquo;{testimonial.content || testimonial.quote}&rdquo;
                   </p>
                 </blockquote>
                 
                 <div className="mt-6 flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-cyan-500 flex items-center justify-center text-white font-bold">
-                    {testimonial.author.split(" ").map((n: string) => n[0]).join("")}
-                  </div>
+                  {testimonial.image_url ? (
+                    <img
+                      src={testimonial.image_url}
+                      alt={testimonial.name || testimonial.author}
+                      className="h-12 w-12 rounded-full object-cover border-2 border-primary/30"
+                    />
+                  ) : (
+                    <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-cyan-500 flex items-center justify-center text-white font-bold">
+                      {(testimonial.name || testimonial.author || "?").split(" ").map((n: string) => n[0]).join("")}
+                    </div>
+                  )}
                   <div>
-                    <p className="font-semibold text-foreground">{testimonial.author}</p>
-                    <p className="text-sm text-muted-foreground">{testimonial.role}, {testimonial.company}</p>
+                    <p className="font-semibold text-foreground">{testimonial.name || testimonial.author}</p>
+                    <p className="text-sm text-muted-foreground">{testimonial.position || testimonial.role}{(testimonial.position || testimonial.role) && testimonial.company ? ", " : ""}{testimonial.company}</p>
                   </div>
                 </div>
               </div>
