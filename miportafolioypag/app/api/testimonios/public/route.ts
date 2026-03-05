@@ -97,6 +97,10 @@ export async function POST(request: Request) {
           rating,
           image_url: image_url || null,
           created_at: new Date().toISOString(),
+          // Compatibilidad con columnas antiguas
+          quote: content,
+          author: name,
+          role: position,
         },
       ])
       .select()
