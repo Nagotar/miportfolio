@@ -29,6 +29,7 @@ export function ProjectsSection() {
   const [projects, setProjects] = useState<any[]>([])
   const [selectedProject, setSelectedProject] = useState<any | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
 
@@ -44,6 +45,8 @@ export function ProjectsSection() {
         })))
       } catch (error) {
         console.error("Error cargando proyectos:", error)
+      } finally {
+        setIsLoading(false)
       }
     }
     
@@ -132,8 +135,24 @@ export function ProjectsSection() {
           className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           layout
         >
+          {/* Skeletons de carga */}
+          {isLoading && [...Array(6)].map((_, i) => (
+            <div key={i} className="rounded-2xl border border-border/50 bg-card/50 overflow-hidden animate-pulse">
+              <div className="h-48 bg-muted/60" />
+              <div className="p-6 space-y-3">
+                <div className="h-4 bg-muted/60 rounded-full w-3/4" />
+                <div className="h-3 bg-muted/40 rounded-full w-full" />
+                <div className="h-3 bg-muted/40 rounded-full w-5/6" />
+                <div className="flex gap-2 mt-4">
+                  <div className="h-6 w-16 bg-muted/40 rounded-full" />
+                  <div className="h-6 w-16 bg-muted/40 rounded-full" />
+                </div>
+              </div>
+            </div>
+          ))}
+
           <AnimatePresence mode="popLayout">
-            {filteredProjects.map((project, i) => (
+            {!isLoading && filteredProjects.map((project, i) => (
               <motion.div
                 key={project.id}
                 layout

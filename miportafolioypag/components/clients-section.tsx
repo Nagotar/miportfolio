@@ -20,6 +20,7 @@ export function ClientsSection() {
   const isInView = useInView(ref, { once: true, margin: "-100px" })
   const [clients, setClients] = useState<any[]>([])
   const [testimonials, setTestimonials] = useState<any[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const loadData = async () => {
@@ -36,6 +37,8 @@ export function ClientsSection() {
         setTestimonials(testimonialsData)
       } catch (error) {
         console.error("Error cargando clientes y testimonios:", error)
+      } finally {
+        setIsLoading(false)
       }
     }
     
@@ -89,7 +92,14 @@ export function ClientsSection() {
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ delay: 0.3 }}
         >
-          {clients.map((client, i) => (
+          {isLoading && [...Array(6)].map((_, i) => (
+            <div key={i} className="flex flex-col items-center p-6 rounded-2xl bg-card/50 border border-border/50 animate-pulse">
+              <div className="h-16 w-16 rounded-2xl bg-muted/60" />
+              <div className="mt-4 h-3 w-20 bg-muted/60 rounded-full" />
+              <div className="mt-2 h-2 w-14 bg-muted/40 rounded-full" />
+            </div>
+          ))}
+          {!isLoading && clients.map((client, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 30 }}
@@ -131,7 +141,27 @@ export function ClientsSection() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.8 }}
         >
-          {testimonials.map((testimonial, i) => (
+          {isLoading && [...Array(2)].map((_, i) => (
+            <div key={i} className="rounded-2xl border border-border/50 bg-card/50 p-8 animate-pulse">
+              <div className="h-10 w-10 rounded-lg bg-muted/60 mb-4" />
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, s) => <div key={s} className="h-4 w-4 rounded-full bg-muted/60" />)}
+              </div>
+              <div className="space-y-2 mb-6">
+                <div className="h-4 bg-muted/60 rounded-full w-full" />
+                <div className="h-4 bg-muted/60 rounded-full w-5/6" />
+                <div className="h-4 bg-muted/40 rounded-full w-3/4" />
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="h-12 w-12 rounded-full bg-muted/60" />
+                <div className="space-y-2">
+                  <div className="h-3 w-24 bg-muted/60 rounded-full" />
+                  <div className="h-3 w-32 bg-muted/40 rounded-full" />
+                </div>
+              </div>
+            </div>
+          ))}
+          {!isLoading && testimonials.map((testimonial, i) => (
             <motion.div
               key={i}
               className="group relative"
