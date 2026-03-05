@@ -84,6 +84,8 @@ export async function POST(request: Request) {
     }
 
     // Insertar testimonio en Supabase
+    console.log("Intentando insertar testimonio:", { name, position, company, content, rating, image_url })
+    
     const { data, error } = await supabase
       .from("testimonials")
       .insert([
@@ -102,8 +104,14 @@ export async function POST(request: Request) {
 
     if (error) {
       console.error("Error insertando testimonio:", error)
+      console.error("Detalles del error:", JSON.stringify(error, null, 2))
       return NextResponse.json(
-        { error: "Error al guardar el testimonio" },
+        { 
+          error: "Error al guardar el testimonio",
+          details: error.message,
+          hint: error.hint,
+          code: error.code
+        },
         { status: 500 }
       )
     }
