@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CloudinaryUploadWidget } from "@/components/cloudinary-upload-widget"
 
 type Section = "hero" | "services" | "projects" | "clients" | "testimonials" | "about" | "contact"
@@ -853,17 +854,23 @@ function ProjectsSection({
           
           <div>
             <Label htmlFor={`project-category-${i}`}>Categoría</Label>
-            <Input
-              id={`project-category-${i}`}
+            <Select
               value={project.category || "Software"}
-              onChange={(e) => {
+              onValueChange={(value) => {
                 const newProjects = [...projects]
-                newProjects[i].category = e.target.value
+                newProjects[i].category = value
                 setProjects(newProjects)
               }}
-              className="mt-1"
-              placeholder="Software, Redes, Mantenimiento"
-            />
+            >
+              <SelectTrigger className="mt-1">
+                <SelectValue placeholder="Seleccionar categoría" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Software">Software</SelectItem>
+                <SelectItem value="Redes">Redes</SelectItem>
+                <SelectItem value="Mantenimiento">Mantenimiento</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           
           {/* Imagen de Portada */}
