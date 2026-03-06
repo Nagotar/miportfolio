@@ -215,17 +215,6 @@ export default function AdminLogin() {
           </motion.div>
         </div>
 
-        {/* Info de credenciales demo */}
-        <motion.div
-          className="mt-4 p-4 rounded-lg bg-primary/5 border border-primary/20 text-sm text-muted-foreground"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-        >
-          <p className="font-medium text-foreground mb-1">Credenciales de prueba:</p>
-          <p>Email: admin@nagotar.com</p>
-          <p>Contraseña: admin123</p>
-        </motion.div>
       </motion.div>
     </div>
   )
