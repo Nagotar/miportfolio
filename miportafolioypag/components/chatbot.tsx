@@ -105,7 +105,7 @@ export function Chatbot() {
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            className="fixed bottom-6 right-6 z-50"
+            className="fixed bottom-6 right-4 md:right-6 z-50"
           >
             <Button
               onClick={() => setIsOpen(true)}
@@ -125,7 +125,7 @@ export function Chatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 100, scale: 0.8 }}
             transition={{ type: "spring", damping: 25 }}
-            className="fixed bottom-6 right-6 z-50 w-[380px] h-[600px] flex flex-col bg-card/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-border/50 overflow-hidden"
+            className="fixed bottom-6 right-2 md:right-6 z-50 w-[calc(100vw-1rem)] md:w-[380px] h-[500px] md:h-[600px] flex flex-col bg-card/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-border/50 overflow-hidden"
           >
             {/* Header */}
             <div className="bg-gradient-to-r from-primary to-cyan-500 p-4 flex items-center justify-between">

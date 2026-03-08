@@ -18,10 +18,7 @@ const footerLinks = {
     { name: "Clientes", href: "#clientes" },
     { name: "Contacto", href: "#contacto" },
   ],
-  legal: [
-    { name: "Privacidad", href: "#" },
-    { name: "Terminos", href: "#" },
-  ]
+  legal: [] as { name: string; href: string }[]
 }
 
 export function Footer() {

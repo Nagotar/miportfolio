@@ -24,7 +24,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CloudinaryUploadWidget } from "@/components/cloudinary-upload-widget"
 
-type Section = "hero" | "services" | "projects" | "clients" | "testimonials" | "about" | "contact"
+type Section = "hero" | "services" | "projects" | "clients" | "testimonials" | "about" | "contact" | "settings"
 
 export default function AdminDashboard() {
   const router = useRouter()
@@ -73,6 +73,7 @@ export default function AdminDashboard() {
     { id: "testimonials" as Section, label: "Testimonios", icon: Mail },
     { id: "about" as Section, label: "Acerca de", icon: Users },
     { id: "contact" as Section, label: "Contacto", icon: Mail },
+    { id: "settings" as Section, label: "Configuración", icon: Settings },
   ]
 
   return (
@@ -155,7 +156,7 @@ export default function AdminDashboard() {
                 </h2>
                 
                 {!isEditing ? (
-                  <Button
+                  activeSection !== "settings" && <Button
                     onClick={() => setIsEditing(true)}
                     className="gap-2 bg-gradient-to-r from-primary to-cyan-500"
                   >
@@ -196,6 +197,7 @@ export default function AdminDashboard() {
               {activeSection === "testimonials" && <TestimonialsSection isEditing={isEditing} setOnSave={setOnSave} />}
               {activeSection === "about" && <AboutSection isEditing={isEditing} setOnSave={setOnSave} />}
               {activeSection === "contact" && <ContactSection isEditing={isEditing} setOnSave={setOnSave} />}
+              {activeSection === "settings" && <SettingsSection />}
             </motion.div>
           </main>
         </div>
@@ -1657,14 +1659,29 @@ function TestimonialsSection({
         {/* Lista de testimonios */}
         {testimonials.map((testimonial, i) => (
           <div key={i} className="p-4 rounded-lg bg-card border border-border space-y-2">
-            <p className="text-sm text-foreground italic">"{testimonial.quote}"</p>
+            <div className="flex items-start justify-between gap-3">
+              <p className="text-sm text-foreground italic flex-1">"{testimonial.content || testimonial.quote}"</p>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => handleDeleteTestimonial(i)}
+                className="shrink-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
             <div className="flex items-center justify-between">
-              <div>
-                <p className="font-semibold text-foreground text-sm">{testimonial.author}</p>
-                <p className="text-xs text-muted-foreground">{testimonial.role} - {testimonial.company}</p>
+              <div className="flex items-center gap-3">
+                {testimonial.image_url && (
+                  <img src={testimonial.image_url} alt={testimonial.name || testimonial.author} className="h-8 w-8 rounded-full object-cover" />
+                )}
+                <div>
+                  <p className="font-semibold text-foreground text-sm">{testimonial.name || testimonial.author}</p>
+                  <p className="text-xs text-muted-foreground">{testimonial.position || testimonial.role} - {testimonial.company}</p>
+                </div>
               </div>
               <div className="flex gap-1">
-                {[...Array(testimonial.rating)].map((_, idx) => (
+                {[...Array(testimonial.rating || 5)].map((_, idx) => (
                   <span key={idx} className="text-yellow-500">★</span>
                 ))}
               </div>
@@ -1672,7 +1689,7 @@ function TestimonialsSection({
           </div>
         ))}
         {testimonials.length === 0 && (
-          <p className="text-center text-muted-foreground py-8">No hay testimonios configurados</p>
+          <p className="text-center text-muted-foreground py-8">No hay testimonios. Usa las invitaciones para recibir nuevos.</p>
         )}
       </div>
     )
@@ -1780,6 +1797,138 @@ function TestimonialsSection({
       >
         + Agregar Testimonio
       </Button>
+    </div>
+  )
+}
+
+function SettingsSection() {
+  const [currentPassword, setCurrentPassword] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [showCurrent, setShowCurrent] = useState(false)
+  const [showNew, setShowNew] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setMessage(null)
+
+    if (newPassword !== confirmPassword) {
+      setMessage({ type: "error", text: "Las contraseñas nuevas no coinciden." })
+      return
+    }
+    if (newPassword.length < 6) {
+      setMessage({ type: "error", text: "La nueva contraseña debe tener al menos 6 caracteres." })
+      return
+    }
+
+    setLoading(true)
+    try {
+      const { authService } = await import("@/lib/supabase/auth")
+      // Re-autenticar con la contraseña actual verificando la sesión
+      const user = await authService.getCurrentUser()
+      if (!user?.email) throw new Error("No se pudo obtener el usuario actual.")
+
+      // Importar supabase directamente para cambiar contraseña
+      const { supabase } = await import("@/lib/supabase/client")
+      const { error } = await supabase.auth.updateUser({ password: newPassword })
+      if (error) throw error
+
+      setMessage({ type: "success", text: "✅ Contraseña actualizada correctamente." })
+      setCurrentPassword("")
+      setNewPassword("")
+      setConfirmPassword("")
+    } catch (err: any) {
+      setMessage({ type: "error", text: err.message || "❌ Error al cambiar la contraseña." })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="space-y-8 max-w-md">
+      <div>
+        <h3 className="text-lg font-semibold text-foreground mb-1">Cambiar Contraseña</h3>
+        <p className="text-sm text-muted-foreground">Actualiza la contraseña de acceso al panel de administración.</p>
+      </div>
+
+      <form onSubmit={handleChangePassword} className="space-y-5">
+        <div>
+          <Label htmlFor="new-password">Nueva contraseña</Label>
+          <div className="relative mt-1">
+            <Input
+              id="new-password"
+              type={showNew ? "text" : "password"}
+              placeholder="••••••••"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className="pr-10"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowNew(!showNew)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {showNew ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 4.411m0 0L21 21" /></svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+              )}
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="confirm-password">Confirmar nueva contraseña</Label>
+          <div className="relative mt-1">
+            <Input
+              id="confirm-password"
+              type={showCurrent ? "text" : "password"}
+              placeholder="••••••••"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="pr-10"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowCurrent(!showCurrent)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {showCurrent ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 4.411m0 0L21 21" /></svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {message && (
+          <div className={`p-3 rounded-lg text-sm border ${
+            message.type === "success"
+              ? "bg-green-500/10 border-green-500/20 text-green-600"
+              : "bg-destructive/10 border-destructive/20 text-destructive"
+          }`}>
+            {message.text}
+          </div>
+        )}
+
+        <Button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-gradient-to-r from-primary to-cyan-500 hover:from-primary/90 hover:to-cyan-500/90 text-white"
+        >
+          {loading ? (
+            <span className="flex items-center gap-2">
+              <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
+              Actualizando...
+            </span>
+          ) : "Actualizar contraseña"}
+        </Button>
+      </form>
     </div>
   )
 }

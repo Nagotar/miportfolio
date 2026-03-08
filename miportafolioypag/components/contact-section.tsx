@@ -290,15 +290,20 @@ export function ContactSection() {
                       ) : isSubmitted ? (
                         <>
                           <CheckCircle2 className="mr-2 h-5 w-5" />
-                          Mensaje Enviado!
+                          ¡Mensaje recibido! Te contactamos pronto.
                         </>
                       ) : (
                         <>
-                          Enviar Mensaje
+                          Enviar consulta
                           <Send className="ml-2 h-5 w-5" />
                         </>
                       )}
                     </Button>
+                    {!isSubmitted && !isSubmitting && (
+                      <p className="text-center text-xs text-muted-foreground mt-3">
+                        ⏰ Te respondemos en menos de 24 horas
+                      </p>
+                    )}
                   </motion.div>
                 </form>
               </div>

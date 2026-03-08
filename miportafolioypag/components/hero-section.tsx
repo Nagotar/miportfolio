@@ -208,11 +208,11 @@ export function HeroSection() {
                   transition={{ type: "spring", stiffness: 300 }}
                 >
                   <div className="absolute inset-0 bg-primary/10 rounded-lg blur-xl" />
-                  <div className="relative p-4 rounded-lg bg-card/50 border border-border/50 backdrop-blur-sm">
-                    <p className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-cyan-400 bg-clip-text text-transparent">
+                  <div className="relative p-3 md:p-4 rounded-lg bg-card/50 border border-border/50 backdrop-blur-sm">
+                    <p className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary to-cyan-400 bg-clip-text text-transparent">
                       <Counter target={stat.value} suffix={stat.suffix} />
                     </p>
-                    <p className="text-sm text-muted-foreground mt-1">{stat.label}</p>
+                    <p className="text-xs md:text-sm text-muted-foreground mt-1">{stat.label}</p>
                   </div>
                 </motion.div>
               ))}

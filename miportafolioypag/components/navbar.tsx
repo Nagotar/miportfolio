@@ -154,7 +154,7 @@ export function Navbar() {
           >
             <Link
               href="#contacto"
-              className="ml-4 px-5 py-2 rounded-full bg-gradient-to-r from-primary to-cyan-500 text-white text-sm font-medium shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow"
+              className="ml-4 px-5 py-2.5 min-h-[44px] rounded-full bg-gradient-to-r from-primary to-cyan-500 text-white text-sm font-medium shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow inline-flex items-center"
             >
               Cotizar Proyecto
             </Link>
@@ -236,7 +236,7 @@ export function Navbar() {
               >
                 <Link
                   href="#contacto"
-                  className="mt-4 px-8 py-3 rounded-full bg-gradient-to-r from-primary to-cyan-500 text-white font-medium"
+                  className="mt-4 px-8 py-3 min-h-[44px] rounded-full bg-gradient-to-r from-primary to-cyan-500 text-white font-medium inline-flex items-center"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Cotizar Proyecto

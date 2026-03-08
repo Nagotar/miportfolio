@@ -109,7 +109,7 @@ export function ProjectsSection() {
               <motion.button
                 key={category}
                 onClick={() => setActiveCategory(category)}
-                className={`relative px-6 py-2 text-sm font-medium rounded-full transition-colors ${
+                className={`relative px-6 py-2.5 min-h-[44px] text-sm font-medium rounded-full transition-colors ${
                   activeCategory === category 
                     ? "text-white" 
                     : "text-muted-foreground hover:text-foreground"
@@ -276,7 +276,7 @@ export function ProjectsSection() {
 
       {/* Modal de Detalles del Proyecto - Diseño Elegante */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-4xl p-0 gap-0 bg-background/95 backdrop-blur-xl border-border/50">
+        <DialogContent className="max-w-4xl p-0 gap-0 bg-background/95 backdrop-blur-xl border-border/50 max-h-[90vh] overflow-y-auto">
           {selectedProject && (
             <div className="flex flex-col">
               {/* Video o Imagen - Full Width */}
@@ -345,6 +345,27 @@ export function ProjectsSection() {
                     </a>
                   </div>
                 )}
+
+                {/* CTA Cotizar */}
+                <div className="pt-4 border-t border-border/40 mt-4">
+                  <p className="text-sm text-muted-foreground mb-3">¿Te interesa algo similar para tu negocio?</p>
+                  <a
+                    href={`#contacto`}
+                    onClick={() => {
+                      setIsModalOpen(false)
+                      setTimeout(() => {
+                        const el = document.getElementById('contacto')
+                        if (el) el.scrollIntoView({ behavior: 'smooth' })
+                        const subjectInput = document.querySelector<HTMLInputElement>('input[placeholder="En que podemos ayudarte?"]')
+                        if (subjectInput) subjectInput.value = `Cotizar proyecto similar a: ${selectedProject.title}`
+                      }, 300)
+                    }}
+                    className="inline-flex items-center gap-2 px-6 py-3 min-h-[44px] rounded-full border border-primary/40 text-primary hover:bg-primary/10 font-medium transition-all duration-300 hover:border-primary/70 hover:scale-105"
+                  >
+                    Cotizar proyecto similar
+                    <ArrowUpRight className="h-4 w-4" />
+                  </a>
+                </div>
               </div>
             </div>
           )}
