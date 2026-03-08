@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next'
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://nagotar.com'
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://nagotartech.cl'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
@@ -9,42 +9,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 1,
-    },
-    {
-      url: `${siteUrl}/#servicios`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${siteUrl}/#proyectos`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${siteUrl}/#clientes`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${siteUrl}/#testimonios`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    },
-    {
-      url: `${siteUrl}/#nosotros`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    {
-      url: `${siteUrl}/#contacto`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.9,
     },
   ]
 }

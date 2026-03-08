@@ -9,7 +9,7 @@ import './globals.css'
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://nagotar.com'
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://nagotartech.cl'
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
